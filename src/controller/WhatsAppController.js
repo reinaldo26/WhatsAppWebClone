@@ -46,12 +46,12 @@ class WhatsAppController {
             return this;
         }
 
-        Element.prototype.toggleClass = function(){
+        Element.prototype.toggleClass = function(name){
             this.classList.toggle(name);
             return this;
         }
 
-        Element.prototype.hasClass = function(){
+        Element.prototype.hasClass = function(name){
             return this.classList.contains(name);
         }
 
@@ -206,6 +206,61 @@ class WhatsAppController {
 
         this.el.btnFinishMicrophone.on('click', (e)=>{
             this.closeRecordMicrophone();
+        });
+
+        this.el.inputText.on('keypress', (e)=>{
+            if (e.key === 'Enter' && !e.ctrlkey) {
+                e.preventDefault();
+                this.el.btnSend.click();
+            }
+        });
+
+        this.el.inputText.on('keyup', (e)=>{
+            if (this.el.inputText.innerHTML.length) {
+                this.el.inputPlaceholder.hide();
+                this.el.btnSendMicrophone.hide();
+                this.el.btnSend.show();
+            } else {
+                this.el.inputPlaceholder.show();
+                this.el.btnSendMicrophone.show();
+                this.el.btnSend.hide();
+            }
+        });
+
+        this.el.btnSend.on('click', (e)=>{
+            console.log(this.el.inputText.innerHTML);
+        });
+
+        this.el.btnEmojis.on('click', (e)=>{
+            this.el.panelEmojis.toggleClass('open'); 
+        });
+
+        this.el.panelEmojis.querySelectorAll('.emojik').forEach((emoji)=>{
+            emoji.on('click', (e)=>{
+                let img = this.el.imgEmojiDefault.cloneNode();
+                img.style.cssText = emoji.style.cssText;
+                img.dataset.unicode = emoji.dataset.unicode;
+                img.alt = emoji.dataset.unicode;
+                emoji.classList.forEach((name)=>{
+                    img.classList.add(name);
+                });
+
+                let cursor = window.getSelection();
+
+                if (!cursor.focusNode || !cursor.focusNode.id == 'input-text') {
+                    this.el.inputText.focus();
+                    cursor = window.getSelection();
+                }
+
+                let range = document.createRange();
+                range = cursor.getRangeAt(0);
+                range.deleteContents();
+                let frag = document.createDocumentFragment();
+                frag.appendChild(img);
+                range.insertNode(frag);
+                range.setStartAfter(img);
+                this.el.inputText.dispatchEvent(new Event('keyup'));
+            });
         });
     }
 
