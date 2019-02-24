@@ -22,7 +22,7 @@ export class WhatsAppController {
         }
 
         Element.prototype.toggle = function(){
-            this.style.display = (this.style.display === 'none')?'block':'none';
+            this.style.display = (this.style.display === 'none') ? 'block' : 'none';
             return this;
         }
 
