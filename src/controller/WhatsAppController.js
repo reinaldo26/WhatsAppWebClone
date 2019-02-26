@@ -1,6 +1,8 @@
 import { Format } from './../util/Format';
 import { CameraController } from './CameraController';
+import { MicrophoneController } from './MicrophoneController';
 import { DocumentPreviewController } from './DocumentPreviewController';
+import { Firebase } from './../util/Firebase';
 
 export class WhatsAppController {
 
@@ -8,6 +10,7 @@ export class WhatsAppController {
         this.elementsPrototype();
         this.loadElements();
         this.initEvents();
+        this._firebase = new Firebase();
     }
 
     elementsPrototype(){
@@ -261,13 +264,20 @@ export class WhatsAppController {
             this.el.recordMicrophone.show();
             this.el.btnSendMicrophone.hide();
             this.startRecordMicrophoneTime();
+            this._microphoneController =  new MicrophoneController();
+            
+            this._microphoneController.on('play', (audio)=>{
+                console.log('TOCANDO... ', audio);
+            });
         });
 
         this.el.btnCancelMicrophone.on('click', (e)=>{
+            this._microphoneController.stop();
             this.closeRecordMicrophone();
         });
 
         this.el.btnFinishMicrophone.on('click', (e)=>{
+            this._microphoneController.stop();
             this.closeRecordMicrophone();
         });
 
