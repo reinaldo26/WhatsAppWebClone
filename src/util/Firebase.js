@@ -29,4 +29,17 @@ export class Firebase {
     static hd(){
         return firebase.storage();
     }
+
+    initAuth(){
+        return new Promise((resolve, reject)=>{
+            let provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithPopup(provider).then((result)=>{
+                let user = result.user;
+                let token = result.credential.accessToken;
+                resolve({ user, token });
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
+    }
 }
