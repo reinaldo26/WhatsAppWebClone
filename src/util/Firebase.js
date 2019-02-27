@@ -16,9 +16,9 @@ export class Firebase {
 
     init(){
         // Iniciando o  Firebase
-        if (!this._initialized) {
+        if (!window._initializedFirebase) {
             firebase.initializeApp(this._config);
-            this._initialized = true;
+            window._initializedFirebase = true;
         }
     }
 
